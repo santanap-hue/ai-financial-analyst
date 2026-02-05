@@ -1,0 +1,8 @@
+
+{
+  "name": "AI Financial Analyst",
+  "description": "A comprehensive personal finance dashboard with AI-driven insights, data tracking, and a smart chat assistant for financial planning.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
