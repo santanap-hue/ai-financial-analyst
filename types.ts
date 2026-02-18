@@ -21,6 +21,8 @@ export interface TransactionInput {
 export interface User {
   id: string;
   email: string;
+  role?: 'USER' | 'ADMIN';
+  lastLogin?: string | null;
 }
 
 export interface ChatMessage {

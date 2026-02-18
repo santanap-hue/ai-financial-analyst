@@ -6,6 +6,7 @@ import Chat from './components/Chat';
 import Login from './components/Login';
 import Register from './components/Register';
 import Header from './components/Header';
+import AdminUsers from './components/AdminUsers';
 import Analysis from './Analysis';
 import ApiKeySettings from './components/ApiKeySettings';
 import { Transaction, TransactionInput, Theme, User } from './types';
@@ -96,7 +97,7 @@ const App: React.FC = () => {
   return (
     <HashRouter>
       <div className="min-h-screen flex flex-col bg-white dark:bg-black">
-        <Header theme={theme} onToggleTheme={toggleTheme} onLogout={handleLogout} userEmail={user?.email || ''} />
+        <Header theme={theme} onToggleTheme={toggleTheme} onLogout={handleLogout} userEmail={user?.email || ''} userRole={user?.role} />
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Dashboard transactions={transactions} />} />
@@ -104,6 +105,7 @@ const App: React.FC = () => {
             <Route path="/chat" element={<Chat />} />
             <Route path="/analysis" element={<Analysis transactions={transactions} />} />
             <Route path="/settings" element={<ApiKeySettings />} />
+            <Route path="/admin" element={<AdminUsers />} />
             <Route path="/reports" element={<div className="p-10 text-center text-gray-900 dark:text-white">Reports Page - Coming Soon</div>} />
           </Routes>
         </main>

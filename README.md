@@ -30,7 +30,8 @@ It is not embedded in the build or stored on any server.
 **Prerequisites:** Docker (for Postgres), Node.js
 
 1. Start Postgres:
-   `docker compose up -d`
+   `
+   `
 2. Setup backend env:
    copy `server/.env.example` -> `server/.env`
 3. Install backend deps:

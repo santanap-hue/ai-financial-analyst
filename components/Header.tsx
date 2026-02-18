@@ -8,6 +8,7 @@ interface HeaderProps {
   onToggleTheme: () => void;
   onLogout: () => void;
   userEmail: string;
+  userRole?: string | null;
 }
 
 const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme, onLogout, userEmail }) => {
@@ -16,6 +17,7 @@ const Header: React.FC<HeaderProps> = ({ theme, onToggleTheme, onLogout, userEma
   const navLinks = [
     { name: 'Dashboard', path: '/' },
     { name: 'บันทึกข้อมูล', path: '/entry' },
+    ...(userRole === 'ADMIN' ? [{ name: 'Users', path: '/admin' }] : []),
     { name: 'รายงาน', path: '/reports' },
     { name: 'AI Chat', path: '/chat', icon: 'chat_bubble' },
     { name: 'API Key', path: '/settings', icon: 'key' },

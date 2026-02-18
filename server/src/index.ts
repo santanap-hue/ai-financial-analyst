@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 
 const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:3000';
+const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
 
 app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(express.json());
@@ -85,16 +85,28 @@ app.post('/api/auth/login', async (req, res) => {
     return res.status(401).json({ error: 'Invalid credentials' });
   }
 
+  // update lastLogin
+  await prisma.user.update({ where: { id: user.id }, data: { lastLogin: new Date() } });
+
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
   res.json({ token });
 });
 
 app.get('/api/me', requireAuth, async (req, res) => {
   const userId = (req as any).userId as string;
-  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true } });
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, role: true, lastLogin: true } });
   if (!user) return res.status(404).json({ error: 'User not found' });
   res.json({ user });
 });
+
+  app.get('/api/admin/users', requireAuth, async (req, res) => {
+    const userId = (req as any).userId as string;
+    const me = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, role: true } });
+    if (!me || me.role !== 'ADMIN') return res.status(403).json({ error: 'Forbidden' });
+
+    const users = await prisma.user.findMany({ select: { id: true, email: true, createdAt: true, lastLogin: true, role: true }, orderBy: { createdAt: 'desc' } });
+    res.json({ users });
+  });
 
 app.get('/api/transactions', requireAuth, async (req, res) => {
   const userId = (req as any).userId as string;

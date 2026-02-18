@@ -33,7 +33,8 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ email, password }),
     }),
-  me: () => request<{ user: { id: string; email: string } }>('/api/me'),
+  me: () => request<{ user: { id: string; email: string; role?: string; lastLogin?: string | null } }>('/api/me'),
+  adminListUsers: () => request<{ users: Array<{ id: string; email: string; createdAt: string; lastLogin?: string | null; role?: string }> }>('/api/admin/users'),
   listTransactions: () => request<{ transactions: Transaction[] }>('/api/transactions'),
   createTransaction: (payload: {
     type: 'income' | 'expense' | 'invest';

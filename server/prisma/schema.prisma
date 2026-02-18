@@ -11,6 +11,8 @@ model User {
   id           String        @id @default(cuid())
   email        String        @unique
   passwordHash String
+  role         Role          @default(USER)
+  lastLogin    DateTime?
   createdAt    DateTime      @default(now())
   transactions Transaction[]
 }
@@ -27,4 +29,9 @@ model Transaction {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+enum Role {
+  USER
+  ADMIN
 }
