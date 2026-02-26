@@ -30,6 +30,37 @@ function normalizeApiText(value: unknown): string | null {
   return s.trim() || null;
 }
 
+function normalizeChatHistory(history: ChatHistoryTurn[]): ChatHistoryTurn[] {
+  const normalized: ChatHistoryTurn[] = [];
+
+  for (const turn of history) {
+    const text = normalizeApiText(turn?.parts?.[0]?.text);
+    if (!text) continue;
+
+    if (normalized.length === 0 && turn.role !== "user") {
+      continue;
+    }
+
+    const last = normalized[normalized.length - 1];
+    if (last?.role === turn.role) {
+      last.parts = [{ text: `${last.parts[0].text}\n${text}` }];
+      continue;
+    }
+
+    normalized.push({
+      role: turn.role,
+      parts: [{ text }],
+    });
+  }
+
+  // `sendMessage` sends a user turn separately, so history should end with model.
+  if (normalized[normalized.length - 1]?.role === "user") {
+    normalized.pop();
+  }
+
+  return normalized;
+}
+
 export const getFinancialInsight = async (summary: string): Promise<string> => {
   try {
     const ai = getClient();
@@ -96,9 +127,10 @@ export const chatWithAI = async (
 ): Promise<string> => {
   try {
     const ai = getClient();
+    const normalizedHistory = normalizeChatHistory(history);
     const chat = ai.chats.create({
       model: "gemini-3-flash-preview",
-      history: history.length > 0 ? history : undefined,
+      history: normalizedHistory.length > 0 ? normalizedHistory : undefined,
       config: {
         systemInstruction:
           "You are a helpful AI Financial Analyst specialized in helping students manage their money. You speak Thai primarily. Be encouraging, precise, and professional. Keep your responses short and concise — ideally 2-3 sentences. Avoid long paragraphs or bullet points unless the user explicitly asks for detailed explanation.",

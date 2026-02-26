@@ -20,17 +20,18 @@ const Chat: React.FC = () => {
   }, [messages]);
 
   const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+    const userText = input.trim();
+    if (!userText || isLoading) return;
 
-    const userMessage: ChatMessage = { role: 'user', text: input, timestamp: new Date() };
+    const userMessage: ChatMessage = { role: 'user', text: userText, timestamp: new Date() };
     setMessages(prev => [...prev, userMessage]);
     setInput('');
     setIsLoading(true);
     setApiError('');
 
-    const history = [...messages, userMessage].map(m => ({ role: m.role, parts: [{ text: m.text }] }));
+    const history = messages.map(m => ({ role: m.role, parts: [{ text: m.text }] }));
     try {
-      const response = await chatWithAI(input, history);
+      const response = await chatWithAI(userText, history);
       setMessages(prev => [...prev, { role: 'model', text: response || 'No response', timestamp: new Date() }]);
     } catch (error) {
       if (error instanceof Error && error.message.includes("GEMINI_API_KEY_MISSING")) {
