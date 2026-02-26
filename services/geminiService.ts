@@ -65,7 +65,7 @@ export const getFinancialInsight = async (summary: string): Promise<string> => {
   try {
     const ai = getClient();
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       contents: `Based on this financial summary: "${summary}", provide a single, short, actionable advice for a student in Thai language. Start with "AI Insight: ".`,
       config: {
         temperature: 0.7,
@@ -89,7 +89,7 @@ export const getFinancialAnalysis = async (detailsJson: string): Promise<string>
   try {
     const ai = getClient();
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       contents: `คุณเป็น AI Financial Analyst สำหรับนักศึกษา จงวิเคราะห์ข้อมูลการเงินต่อไปนี้อย่างละเอียด:
 
 ${detailsJson}
@@ -129,7 +129,7 @@ export const chatWithAI = async (
     const ai = getClient();
     const normalizedHistory = normalizeChatHistory(history);
     const chat = ai.chats.create({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.5-flash",
       history: normalizedHistory.length > 0 ? normalizedHistory : undefined,
       config: {
         systemInstruction:
